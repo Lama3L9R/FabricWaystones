@@ -43,8 +43,10 @@ dependencies {
     modApi group: 'info.journeymap', name: 'journeymap-api', version: project.journeymap_api_version, changing: true
     modRuntimeOnly "curse.maven:journeymap-${project.jm_project_id}:${project.jm_file_id}"
 
-    modApi "maven.modrinth:pinlib:$project.pinlib_api_version"
-    modRuntimeOnly "maven.modrinth:pinlib:$project.pinlib_api_version"
+//    modApi "maven.modrinth:pinlib:$project.pinlib_api_version"
+//    modRuntimeOnly "maven.modrinth:pinlib:$project.pinlib_api_version"
+    implementation project(":pinlib")
+    include project(":pinlib")
 
     annotationProcessor modImplementation("io.wispforest:owo-lib:${project.owo_version}")
     include "io.wispforest:owo-sentinel:${project.owo_version}"
