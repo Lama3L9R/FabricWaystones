@@ -1,5 +1,6 @@
 package wraith.fwaystones.item;
 
+import eu.pb4.polymer.api.item.PolymerItem;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.LivingEntity;
@@ -7,6 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -20,7 +22,7 @@ import wraith.fwaystones.util.Utils;
 
 import java.util.List;
 
-public class WaystoneDebuggerItem extends Item {
+public class WaystoneDebuggerItem extends Item implements PolymerItem {
 
     private static final int TOOLTIP_MESSAGE = Utils.getRandomIntInRange(1, 4);
 
@@ -83,4 +85,8 @@ public class WaystoneDebuggerItem extends Item {
         tooltip.add(Text.translatable("fwaystones.debug.debugger_tooltip" + TOOLTIP_MESSAGE));
     }
 
+    @Override
+    public Item getPolymerItem(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
+        return Items.POISONOUS_POTATO;
+    }
 }

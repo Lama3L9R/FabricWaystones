@@ -1,5 +1,6 @@
 package wraith.fwaystones.block;
 
+import eu.pb4.polymer.api.block.PolymerBlock;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
@@ -32,6 +33,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
@@ -41,6 +43,7 @@ import org.jetbrains.annotations.Nullable;
 import wraith.fwaystones.FabricWaystones;
 import wraith.fwaystones.access.PlayerEntityMixinAccess;
 import wraith.fwaystones.integration.pinlib.PinlibPlugin;
+import wraith.fwaystones.gui.UniversalWaystoneGui;
 import wraith.fwaystones.item.LocalVoidItem;
 import wraith.fwaystones.item.WaystoneDebuggerItem;
 import wraith.fwaystones.item.WaystoneScrollItem;
@@ -48,7 +51,7 @@ import wraith.fwaystones.registry.BlockEntityRegistry;
 import wraith.fwaystones.util.Utils;
 
 @SuppressWarnings("deprecation")
-public class WaystoneBlock extends BlockWithEntity implements Waterloggable {
+public class WaystoneBlock extends BlockWithEntity implements Waterloggable, PolymerBlock {
 
     public static final BooleanProperty ACTIVE = BooleanProperty.of("active");
     public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
@@ -56,34 +59,12 @@ public class WaystoneBlock extends BlockWithEntity implements Waterloggable {
     public static final BooleanProperty MOSSY = BooleanProperty.of("mossy");
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
 
-    protected static final VoxelShape VOXEL_SHAPE_TOP;
-    protected static final VoxelShape VOXEL_SHAPE_BOTTOM;
+    private final WaystoneStyle style;
 
-    static {
-        // TOP
-        VoxelShape vs1_1 = Block.createCuboidShape(1f, 0f, 1f, 15f, 2f, 15f);
-        VoxelShape vs2_1 = Block.createCuboidShape(2f, 2f, 2f, 14f, 5f, 14f);
-        VoxelShape vs3_1 = Block.createCuboidShape(3f, 5f, 3f, 13f, 16f, 13f);
-        // BOTTOM
-        VoxelShape vs1_2 = Block.createCuboidShape(3f, 0f, 3f, 13f, 1f, 13f);
-        VoxelShape vs2_2 = Block.createCuboidShape(2f, 1f, 2f, 14f, 5f, 14f);
-        VoxelShape vs3_2 = Block.createCuboidShape(3f, 5f, 3f, 13f, 7f, 13f);
-        VoxelShape vs4_2 = Block.createCuboidShape(7f, 5f, 1f, 9f, 8f, 3f);
-        VoxelShape vs5_2 = Block.createCuboidShape(7f, 7f, 3f, 9f, 10f, 4f);
-        VoxelShape vs6_2 = Block.createCuboidShape(1f, 5f, 7f, 3f, 8f, 9f);
-        VoxelShape vs7_2 = Block.createCuboidShape(3f, 7f, 7f, 4f, 10f, 9f);
-        VoxelShape vs8_2 = Block.createCuboidShape(7f, 5f, 13f, 9f, 8f, 15f);
-        VoxelShape vs9_2 = Block.createCuboidShape(7f, 7f, 12f, 9f, 10f, 13f);
-        VoxelShape vs10_2 = Block.createCuboidShape(13f, 5f, 7f, 15f, 8f, 9f);
-        VoxelShape vs11_2 = Block.createCuboidShape(12f, 7f, 7f, 13f, 10f, 9f);
-
-        VOXEL_SHAPE_TOP = VoxelShapes.union(vs1_2, vs2_2, vs3_2, vs4_2, vs5_2, vs6_2, vs7_2, vs8_2, vs9_2, vs10_2, vs11_2).simplify();
-        VOXEL_SHAPE_BOTTOM = VoxelShapes.union(vs1_1, vs2_1, vs3_1).simplify();
-    }
-
-    public WaystoneBlock(AbstractBlock.Settings settings) {
+    public WaystoneBlock(WaystoneStyle style, AbstractBlock.Settings settings) {
         super(settings);
         setDefaultState(getStateManager().getDefaultState().with(HALF, DoubleBlockHalf.LOWER).with(FACING, Direction.NORTH).with(MOSSY, false).with(WATERLOGGED, false).with(ACTIVE, false));
+        this.style = style;
     }
 
     @Nullable
@@ -160,11 +141,6 @@ public class WaystoneBlock extends BlockWithEntity implements Waterloggable {
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
-        return state.get(HALF) == DoubleBlockHalf.LOWER ? VOXEL_SHAPE_BOTTOM : VOXEL_SHAPE_TOP;
-    }
-
-    @Override
     public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         BlockPos topPos;
         BlockPos botPos;
@@ -191,8 +167,16 @@ public class WaystoneBlock extends BlockWithEntity implements Waterloggable {
             } else {
                 waystone.checkLootInteraction(player);
             }
+            if (FabricWaystones.WAYSTONE_STORAGE != null) {
+                FabricWaystones.WAYSTONE_STORAGE.removeWaystone(waystone);
+            }
+            world.removeBlockEntity(botPos);
         }
 
+        if (FabricWaystones.WAYSTONE_STORAGE != null && world.getBlockEntity(topPos) instanceof WaystoneBlockEntity waystone) {
+            FabricWaystones.WAYSTONE_STORAGE.removeWaystone(waystone);
+            world.removeBlockEntity(topPos);
+        }
         world.removeBlock(topPos, false);
         world.removeBlock(botPos, false);
         world.updateNeighbors(topPos, Blocks.AIR);
@@ -309,10 +293,9 @@ public class WaystoneBlock extends BlockWithEntity implements Waterloggable {
                 blockEntity.updateActiveState();
             }
 
-            var screenHandlerFactory = state.createScreenHandlerFactory(world, openPos);
-
-            if (screenHandlerFactory != null)
-                player.openHandledScreen(screenHandlerFactory);
+            if (player instanceof ServerPlayerEntity serverPlayerEntity) {
+                UniversalWaystoneGui.open(serverPlayerEntity, blockEntity);
+            }
         }
         blockEntity.markDirty();
         return ActionResult.success(false);
@@ -365,4 +348,19 @@ public class WaystoneBlock extends BlockWithEntity implements Waterloggable {
         return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
     }
 
+    @Override
+    public Block getPolymerBlock(BlockState state) {
+        return this.style.lower().getBlock();
+    }
+
+    @Override
+    public BlockState getPolymerBlockState(BlockState state) {
+        return state.get(HALF) == DoubleBlockHalf.LOWER
+                ? state.get(WATERLOGGED) ? this.style.lowerWater() : this.style.lower()
+                : state.get(WATERLOGGED) ? this.style.upperWater() : this.style.upper();
+    }
+
+    public WaystoneStyle getStyle() {
+        return this.style;
+    }
 }

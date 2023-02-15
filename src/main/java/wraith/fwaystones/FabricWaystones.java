@@ -36,9 +36,7 @@ public class FabricWaystones implements ModInitializer {
         BlockEntityRegistry.registerBlockEntities();
         ItemRegistry.init();
         CompatRegistry.init();
-        CustomScreenHandlerRegistry.registerScreenHandlers();
         WaystonesEventManager.registerEvents();
-        WaystonePacketHandler.registerPacketHandlers();
 
         if (FabricLoader.getInstance().isModLoaded("pinlib")) {
             PinlibPlugin.init();

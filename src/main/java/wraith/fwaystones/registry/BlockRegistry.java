@@ -8,22 +8,25 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import wraith.fwaystones.FabricWaystones;
+import net.minecraft.block.*;
+import net.minecraft.util.registry.Registry;
 import wraith.fwaystones.block.WaystoneBlock;
 import wraith.fwaystones.util.Utils;
+import wraith.fwaystones.block.WaystoneStyle;
 
 import java.util.HashMap;
 
 public final class BlockRegistry {
 
-    public static final Block BLACKSTONE_BRICK_WAYSTONE = new WaystoneBlock(FabricBlockSettings.of(Material.STONE).requiresTool().strength(FabricWaystones.CONFIG.waystone_block_hardness(), 3600000));
-    public static final Block DEEPSLATE_BRICK_WAYSTONE = new WaystoneBlock(FabricBlockSettings.of(Material.STONE).requiresTool().strength(FabricWaystones.CONFIG.waystone_block_hardness(), 3600000));
-    public static final Block DESERT_WAYSTONE = new WaystoneBlock(FabricBlockSettings.of(Material.STONE).requiresTool().strength(FabricWaystones.CONFIG.waystone_block_hardness(), 3600000));
-    public static final Block ENDSTONE_BRICK_WAYSTONE = new WaystoneBlock(FabricBlockSettings.of(Material.STONE).requiresTool().strength(FabricWaystones.CONFIG.waystone_block_hardness(), 3600000));
-    public static final Block NETHER_BRICK_WAYSTONE = new WaystoneBlock(FabricBlockSettings.of(Material.STONE).requiresTool().strength(FabricWaystones.CONFIG.waystone_block_hardness(), 3600000));
-    public static final Block RED_DESERT_WAYSTONE = new WaystoneBlock(FabricBlockSettings.of(Material.STONE).requiresTool().strength(FabricWaystones.CONFIG.waystone_block_hardness(), 3600000));
-    public static final Block RED_NETHER_BRICK_WAYSTONE = new WaystoneBlock(FabricBlockSettings.of(Material.STONE).requiresTool().strength(FabricWaystones.CONFIG.waystone_block_hardness(), 3600000));
-    public static final Block STONE_BRICK_WAYSTONE = new WaystoneBlock(FabricBlockSettings.of(Material.STONE).requiresTool().strength(FabricWaystones.CONFIG.waystone_block_hardness(), 3600000));
-    public static final Block WAYSTONE = new WaystoneBlock(FabricBlockSettings.of(Material.STONE).requiresTool().strength(FabricWaystones.CONFIG.waystone_block_hardness(), 3600000));
+    public static final Block BLACKSTONE_BRICK_WAYSTONE = new WaystoneBlock(style(Blocks.POLISHED_BLACKSTONE_BUTTON, Blocks.POLISHED_BLACKSTONE_BRICK_WALL), FabricBlockSettings.of(Material.STONE).requiresTool().strength(FabricWaystones.CONFIG.waystone_block_hardness(), 3600000));
+    public static final Block DEEPSLATE_BRICK_WAYSTONE = new WaystoneBlock(style(Blocks.POLISHED_BLACKSTONE_BUTTON, Blocks.POLISHED_BLACKSTONE_BRICK_WALL), FabricBlockSettings.of(Material.STONE).requiresTool().strength(FabricWaystones.CONFIG.waystone_block_hardness(), 3600000));
+    public static final Block DESERT_WAYSTONE = new WaystoneBlock(style(Blocks.BIRCH_BUTTON, Blocks.SANDSTONE_WALL), FabricBlockSettings.of(Material.STONE).requiresTool().strength(FabricWaystones.CONFIG.waystone_block_hardness(), 3600000));
+    public static final Block ENDSTONE_BRICK_WAYSTONE = new WaystoneBlock(style(Blocks.BIRCH_BUTTON, Blocks.END_STONE_BRICK_WALL), FabricBlockSettings.of(Material.STONE).requiresTool().strength(FabricWaystones.CONFIG.waystone_block_hardness(), 3600000));
+    public static final Block NETHER_BRICK_WAYSTONE = new WaystoneBlock(style(Blocks.CRIMSON_BUTTON, Blocks.NETHER_BRICK_WALL), FabricBlockSettings.of(Material.STONE).requiresTool().strength(FabricWaystones.CONFIG.waystone_block_hardness(), 3600000));
+    public static final Block RED_DESERT_WAYSTONE = new WaystoneBlock(style(Blocks.ACACIA_BUTTON, Blocks.RED_SANDSTONE_WALL), FabricBlockSettings.of(Material.STONE).requiresTool().strength(FabricWaystones.CONFIG.waystone_block_hardness(), 3600000));
+    public static final Block RED_NETHER_BRICK_WAYSTONE = new WaystoneBlock(style(Blocks.CRIMSON_BUTTON, Blocks.RED_NETHER_BRICK_WALL), FabricBlockSettings.of(Material.STONE).requiresTool().strength(FabricWaystones.CONFIG.waystone_block_hardness(), 3600000));
+    public static final Block STONE_BRICK_WAYSTONE = new WaystoneBlock(style(Blocks.STONE_BUTTON, Blocks.STONE_BRICK_WALL), FabricBlockSettings.of(Material.STONE).requiresTool().strength(FabricWaystones.CONFIG.waystone_block_hardness(), 3600000));
+    public static final Block WAYSTONE = new WaystoneBlock(style(Blocks.STONE_BUTTON, Blocks.ANDESITE_WALL), FabricBlockSettings.of(Material.STONE).requiresTool().strength(FabricWaystones.CONFIG.waystone_block_hardness(), 3600000));
     public static final HashMap<String, Block> WAYSTONE_BLOCKS = new HashMap<>();
     private static Identifier miningLevelTag;
 

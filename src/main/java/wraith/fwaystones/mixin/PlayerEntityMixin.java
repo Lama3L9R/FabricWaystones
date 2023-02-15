@@ -121,14 +121,7 @@ public class PlayerEntityMixin implements PlayerEntityMixinAccess {
     }
 
     @Override
-    public void syncData() {
-        if (!(_this() instanceof ServerPlayerEntity serverPlayerEntity)) {
-            return;
-        }
-        PacketByteBuf packet = PacketByteBufs.create();
-        packet.writeNbt(toTagW(new NbtCompound()));
-        ServerPlayNetworking.send(serverPlayerEntity, WaystonePacketHandler.SYNC_PLAYER, packet);
-    }
+    public void syncData() {}
 
     @Override
     public Set<String> getDiscoveredWaystones() {

@@ -3,8 +3,11 @@ package wraith.fwaystones.util;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -33,13 +36,24 @@ public class WaystonesEventManager {
             FabricWaystones.WAYSTONE_STORAGE = null;
         });
 
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> FabricWaystones.WAYSTONE_STORAGE.sendToPlayer(handler.player));
         ServerLifecycleEvents.SERVER_STARTING.register(WaystonesWorldgen::registerVanillaVillageWorldgen);
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> FabricWaystones.CONFIG.load());
 
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> ((PlayerEntityMixinAccess) newPlayer).syncData());
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal(FabricWaystones.MOD_ID)
+            .then(CommandManager.literal("reload")
+                .requires(source -> source.hasPermissionLevel(1))
+                .executes(context -> {
+                    Config.getInstance().loadConfig();
+
+                    ServerPlayerEntity player = context.getSource().getPlayer();
+                    if (player != null) {
+                        player.sendMessage(Text.literal("§6[§eFabric Waystones§6] §3has successfully reloaded!"), false);
+                    }
+                    return 1;
+                })
+            )
             .then(CommandManager.literal("delete")
                 .requires(source -> source.hasPermissionLevel(1))
                 .executes(context -> {

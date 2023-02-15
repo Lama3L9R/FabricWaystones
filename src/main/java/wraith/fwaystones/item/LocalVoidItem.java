@@ -1,11 +1,15 @@
 package wraith.fwaystones.item;
 
+import eu.pb4.polymer.api.item.PolymerItem;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.ActionResult;
@@ -19,7 +23,7 @@ import wraith.fwaystones.block.WaystoneBlockEntity;
 
 import java.util.List;
 
-public class LocalVoidItem extends Item {
+public class LocalVoidItem extends Item implements PolymerItem {
 
     protected boolean canTeleport = true;
     protected String translationName = "local_void";
@@ -100,4 +104,16 @@ public class LocalVoidItem extends Item {
         ));
     }
 
+
+    @Override
+    public Item getPolymerItem(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
+        return Items.ENDERMAN_SPAWN_EGG;
+    }
+
+    @Override
+    public ItemStack getPolymerItemStack(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
+        var stack = PolymerItem.super.getPolymerItemStack(itemStack, player);
+        stack.addEnchantment(Enchantments.LURE, 2);
+        return stack;
+    }
 }

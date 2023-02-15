@@ -1,14 +1,13 @@
 package wraith.fwaystones.mixin;
 
-import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.entity.EntityStatuses;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.s2c.play.EntityStatusS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Hand;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,7 +21,6 @@ import wraith.fwaystones.item.VoidTotem;
 import wraith.fwaystones.registry.ItemRegistry;
 import wraith.fwaystones.util.TeleportSources;
 import wraith.fwaystones.util.Utils;
-import wraith.fwaystones.util.WaystonePacketHandler;
 
 import java.util.ArrayList;
 
@@ -64,8 +62,7 @@ public abstract class LivingEntityMixin {
         addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 800, 0));
         var teleported = false;
         if (player instanceof ServerPlayerEntity serverPlayer) {
-            PacketByteBuf packet = new PacketByteBuf(Unpooled.buffer());
-            ServerPlayNetworking.send(serverPlayer, WaystonePacketHandler.VOID_REVIVE, packet);
+            serverPlayer.networkHandler.sendPacket(new EntityStatusS2CPacket(serverPlayer, EntityStatuses.USE_TOTEM_OF_UNDYING));
             // Try to get the stored waystone
             var hash = VoidTotem.getBoundWaystone(stack);
             if (hash == null) {
