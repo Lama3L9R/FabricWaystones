@@ -45,8 +45,8 @@ dependencies {
 
 //    modApi "maven.modrinth:pinlib:$project.pinlib_api_version"
 //    modRuntimeOnly "maven.modrinth:pinlib:$project.pinlib_api_version"
-    implementation project(":pinlib")
-    include project(":pinlib")
+    modApi project(":pinlib")
+    modRuntimeOnly project(':pinlib')
 
     annotationProcessor modImplementation("io.wispforest:owo-lib:${project.owo_version}")
     include "io.wispforest:owo-sentinel:${project.owo_version}"
