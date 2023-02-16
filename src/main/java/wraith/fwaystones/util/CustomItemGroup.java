@@ -1,12 +1,10 @@
 package wraith.fwaystones.util;
 
-import eu.pb4.polymer.api.item.PolymerItemGroup;
+import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import wraith.fwaystones.registry.BlockRegistry;
 import net.minecraft.text.Text;
 
 public class CustomItemGroup {
-    public static final ItemGroup WAYSTONE_GROUP = PolymerItemGroup.create(Utils.ID("waystones"), Text.translatable("itemGroup.fwaystones.waystones"), () -> new ItemStack(BlockRegistry.WAYSTONE));
+    // public static final ItemGroup WAYSTONE_GROUP = PolymerItemGroupUtils.builder(Utils.ID("waystones")).displayName( Text.translatable("itemGroup.fwaystones.waystones")).build(); //,, () -> new ItemStack(BlockRegistry.WAYSTONE));
 
 }

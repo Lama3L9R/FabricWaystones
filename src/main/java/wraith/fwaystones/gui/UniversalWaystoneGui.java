@@ -6,20 +6,19 @@ import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.Nullable;
 import wraith.fwaystones.FabricWaystones;
-import wraith.fwaystones.access.PlayerAccess;
 import wraith.fwaystones.access.PlayerEntityMixinAccess;
 import wraith.fwaystones.block.WaystoneBlock;
 import wraith.fwaystones.block.WaystoneBlockEntity;
 import wraith.fwaystones.item.AbyssWatcherItem;
-import wraith.fwaystones.util.Config;
+import wraith.fwaystones.util.FWConfigModel;
 import wraith.fwaystones.util.TeleportSources;
 import wraith.fwaystones.util.Utils;
 
@@ -209,42 +208,40 @@ public class UniversalWaystoneGui extends PagedGui {
     }
 
     protected DisplayElement getCost() {
-            String cost = Config.getInstance().teleportType();
-            int amount = Config.getInstance().baseTeleportCost();
+            FWConfigModel.CostType cost = FabricWaystones.CONFIG.teleportation_cost.cost_type();
+            int amount = FabricWaystones.CONFIG.teleportation_cost.base_cost();
 
             Item item;
             String type;
 
-            switch (cost) {
-                case "hp":
-                case "health":
-                    item = Items.RED_DYE;
-                    type = "health";
-                    break;
-                case "hunger":
-                case "saturation":
-                    item = Items.PORKCHOP;
-                    type = "hunger";
-                    break;
-                case "xp":
-                case "experience":
-                    item = Items.EXPERIENCE_BOTTLE;
-                    type = "xp";
-                    break;
-                case "level":
-                    item = Items.EXPERIENCE_BOTTLE;
-                    type = "level";
-                    break;
-                case "item":
-                    item = Registry.ITEM.get(Config.getInstance().teleportCostItem());
-                    type = "item";
-                    break;
-                default:
-                    return DisplayElement.filler();
+        switch (cost) {
+            case HEALTH -> {
+                item = Items.RED_DYE;
+                type = "health";
             }
+            case HUNGER -> {
+                item = Items.PORKCHOP;
+                type = "hunger";
+            }
+            case EXPERIENCE -> {
+                item = Items.EXPERIENCE_BOTTLE;
+                type = "xp";
+            }
+            case LEVEL -> {
+                item = Items.EXPERIENCE_BOTTLE;
+                type = "level";
+            }
+            case ITEM -> {
+                item = Registries.ITEM.get(Utils.getTeleportCostItem());
+                type = "item";
+            }
+            default -> {
+                return DisplayElement.filler();
+            }
+        }
 
             return DisplayElement.of(new GuiElementBuilder(item)
-                    .setName(Text.translatable("polyport.waystones.cost", amount, type.equals("item") ? item.getName() : Text.translatable("fwaystones.cost." + type)) )
+                    .setName(Text.translatable("polyport.waystones.cost", amount, "item".equals(type) ? item.getName() : Text.translatable("fwaystones.cost." + type)) )
                     .setCount(amount));
     }
 }

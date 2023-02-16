@@ -3,12 +3,13 @@
   "id": "fwaystones",
   "version": "${version}",
   "name": "Fabric Waystones (Polymer Port)",
-  "description": "A better way of transport!",
+  "description": "A better way of transport! Using latest code from LordDeatHunter and merge server port from Patbox",
   "authors": [
     "LordDeatHunter"
   ],
   "contributors": [
-    "Patbox (Polymer Port)"
+    "Patbox (Polymer Port)",
+    "Qumolama (Lama Port Again)"
   ],
   "contact": {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/fabric-waystones",
@@ -30,7 +31,7 @@
   "depends": {
     "fabricloader": ">=0.14.8",
     "fabric": "*",
-    "minecraft": "~1.19",
+    "minecraft": "~1.19.3",
     "java": ">=17",
     "owo": ">=0.8.2"
   }

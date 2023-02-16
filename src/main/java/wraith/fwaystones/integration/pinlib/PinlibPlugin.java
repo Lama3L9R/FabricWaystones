@@ -19,7 +19,7 @@ public class PinlibPlugin {
 
     public static long getMarkerColor(BlockView world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
-        if (state != null)
+        if (state != null) {
             return switch (Registries.BLOCK.getId(state.getBlock()).getPath()) {
                 // Always put 'L' at the end of numbers so that they are longs NOT integers and 'FF' at the start so alpha is 255.
                 case "desert_waystone" -> 0xFFE3DBB0L;
@@ -32,6 +32,7 @@ public class PinlibPlugin {
                 case "blackstone_brick_waystone" -> 0xFF4E4B54L;
                 default -> 0xFFFFFFFFL;
             };
+        }
         return 0xFFFFFFFFL;
     }
 

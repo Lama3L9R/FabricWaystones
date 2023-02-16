@@ -1,6 +1,6 @@
 package wraith.fwaystones.block;
 
-import eu.pb4.polymer.api.block.PolymerBlock;
+import eu.pb4.polymer.core.api.block.PolymerBlock;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
@@ -33,7 +33,6 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
@@ -248,8 +247,9 @@ public class WaystoneBlock extends BlockWithEntity implements Waterloggable, Pol
                 blockEntity.setInventory(DefaultedList.ofSize(0, ItemStack.EMPTY));
             }
         } else {
-            if (!FabricWaystones.CONFIG.discover_waystone_on_map_use() && FabricLoader.getInstance().isModLoaded("pinlib") && PinlibPlugin.tryUseOnMarkableBlock(player.getStackInHand(hand), world, openPos))
+            if (!FabricWaystones.CONFIG.discover_waystone_on_map_use() && FabricLoader.getInstance().isModLoaded("pinlib") && PinlibPlugin.tryUseOnMarkableBlock(player.getStackInHand(hand), world, openPos)) {
                 return ActionResult.SUCCESS;
+            }
 
             FabricWaystones.WAYSTONE_STORAGE.tryAddWaystone(blockEntity);
             if (!discovered.contains(blockEntity.getHash())) {

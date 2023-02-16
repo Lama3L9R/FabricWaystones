@@ -45,7 +45,7 @@ public class WaystonesEventManager {
             .then(CommandManager.literal("reload")
                 .requires(source -> source.hasPermissionLevel(1))
                 .executes(context -> {
-                    Config.getInstance().loadConfig();
+                    FabricWaystones.CONFIG.load();
 
                     ServerPlayerEntity player = context.getSource().getPlayer();
                     if (player != null) {

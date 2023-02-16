@@ -7,7 +7,6 @@ import org.apache.logging.log4j.Logger;
 import wraith.fwaystones.integration.pinlib.PinlibPlugin;
 import wraith.fwaystones.registry.*;
 import wraith.fwaystones.util.FWConfig;
-import wraith.fwaystones.util.WaystonePacketHandler;
 import wraith.fwaystones.util.WaystoneStorage;
 import wraith.fwaystones.util.WaystonesEventManager;
 
@@ -32,6 +31,11 @@ public class FabricWaystones implements ModInitializer {
     @Override
     public void onInitialize() {
         LOGGER.info("Is initializing.");
+        LOGGER.info(" _    _____   _____   _   _ _  _ _____   __");
+        LOGGER.info(" | |  / _ \\ \\ / / __| | | | | \\| |   \\ \\ / /");
+        LOGGER.info(" | |_| (_) \\ V /| _|  | |_| | .` | |) \\ V /");
+        LOGGER.info(" |____\\___/ \\_/ |___|  \\___/|_|\\_|___/ |_| ");
+        LOGGER.info("                                           ");
         BlockRegistry.registerBlocks();
         BlockEntityRegistry.registerBlockEntities();
         ItemRegistry.init();

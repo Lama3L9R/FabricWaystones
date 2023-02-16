@@ -1,6 +1,6 @@
 package wraith.fwaystones.item;
 
-import eu.pb4.polymer.api.item.PolymerItem;
+import eu.pb4.polymer.core.api.item.PolymerItem;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
@@ -91,7 +91,9 @@ public class LocalVoidItem extends Item implements PolymerItem {
         String name = null;
 
         var hash = getBoundWaystone(stack);
-        if (hash != null) name = FabricWaystones.WAYSTONE_STORAGE.getName(hash);
+        if (hash != null) {
+            name = FabricWaystones.WAYSTONE_STORAGE.getName(hash);
+        }
         if (name == null) {
             tooltip.add(Text.translatable("fwaystones." + translationName + ".empty_tooltip"));
             return;
@@ -111,8 +113,8 @@ public class LocalVoidItem extends Item implements PolymerItem {
     }
 
     @Override
-    public ItemStack getPolymerItemStack(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
-        var stack = PolymerItem.super.getPolymerItemStack(itemStack, player);
+    public ItemStack getPolymerItemStack(ItemStack itemStack, TooltipContext context, @Nullable ServerPlayerEntity player) {
+        var stack = PolymerItem.super.getPolymerItemStack(itemStack, context, player);
         stack.addEnchantment(Enchantments.LURE, 2);
         return stack;
     }

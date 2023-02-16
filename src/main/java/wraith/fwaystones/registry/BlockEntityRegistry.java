@@ -1,6 +1,6 @@
 package wraith.fwaystones.registry;
 
-import eu.pb4.polymer.api.block.PolymerBlockUtils;
+import eu.pb4.polymer.core.api.block.PolymerBlockUtils;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.registry.Registries;

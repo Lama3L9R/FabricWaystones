@@ -11,7 +11,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import wraith.fwaystones.FabricWaystones;
 import wraith.fwaystones.block.WaystoneBlockEntity;
-import wraith.fwaystones.util.Config;
+import wraith.fwaystones.util.FWConfig;
+import wraith.fwaystones.util.FWConfigModel;
 
 public class WaystoneSettingsGui extends SimpleGui {
     private final WaystoneBlockEntity waystone;
@@ -32,12 +33,14 @@ public class WaystoneSettingsGui extends SimpleGui {
     protected void updateDisplay() {
         int i = 0;
 
-        if (Config.getInstance().canPlayersToggleGlobal() || Permissions.check(this.player, "waystones.set_global", 3)) {
+        var permLvl = FabricWaystones.CONFIG.global_mode_toggle_permission_levels();
+        if ((permLvl == FWConfigModel.PermissionLevel.OWNER && waystone.getOwner() == this.player.getUuid()) ||
+                (permLvl == FWConfigModel.PermissionLevel.ANYONE) ||
+                (permLvl == FWConfigModel.PermissionLevel.OP && this.player.hasPermissionLevel(3))) {
             this.setSlot(i++, new GuiElementBuilder(waystone.isGlobal() ? Items.ENDER_EYE : Items.ENDER_PEARL)
                     .setName(Text.translatable("fwaystones.config.global"))
                     .setCallback((x, y, z) -> {
                         FabricWaystones.WAYSTONE_STORAGE.toggleGlobal(waystone.getHash());
-                        PagedGui.playClickSound(this.player);
                         this.updateDisplay();
                     })
             );
@@ -47,6 +50,7 @@ public class WaystoneSettingsGui extends SimpleGui {
                 .setName(Text.translatable("fwaystones.config.tooltip.revoke_ownership").formatted(Formatting.WHITE))
                 .setCallback((x, y, z) -> {
                     FabricWaystones.WAYSTONE_STORAGE.setOwner(waystone.getHash(), null);
+                    PagedGui.playClickSound(this.player);
                     PagedGui.playClickSound(this.player);
                     this.close();
                 })

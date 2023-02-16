@@ -1,7 +1,6 @@
 package wraith.fwaystones.util;
 
 import com.mojang.datafixers.util.Pair;
-import eu.pb4.sgui.api.gui.SlotGuiInterface;
 import eu.pb4.sgui.virtual.VirtualScreenHandlerInterface;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
@@ -40,7 +39,8 @@ public final class Utils {
     public static final DecimalFormat df = new DecimalFormat("#.##");
     public static final Random random = new Random();
     private static final RegistryKey<StructureProcessorList> EMPTY_PROCESSOR_LIST_KEY = RegistryKey.of(
-        RegistryKeys.PROCESSOR_LIST, new Identifier("minecraft", "empty"));
+            RegistryKeys.PROCESSOR_LIST
+            , new Identifier("minecraft", "empty"));
 
     private Utils() {
     }
@@ -314,7 +314,9 @@ public final class Utils {
             return gui.getSource();
         } else {
             for (var hand : Hand.values()) {
-                if (!(player.getStackInHand(hand).getItem() instanceof LocalVoidItem)) continue;
+                if (!(player.getStackInHand(hand).getItem() instanceof LocalVoidItem)) {
+                    continue;
+                }
                 return TeleportSources.LOCAL_VOID;
             }
         }

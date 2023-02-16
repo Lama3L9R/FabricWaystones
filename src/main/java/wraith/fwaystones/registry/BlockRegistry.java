@@ -9,10 +9,9 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import wraith.fwaystones.FabricWaystones;
 import net.minecraft.block.*;
-import net.minecraft.util.registry.Registry;
 import wraith.fwaystones.block.WaystoneBlock;
-import wraith.fwaystones.util.Utils;
 import wraith.fwaystones.block.WaystoneStyle;
+import wraith.fwaystones.util.Utils;
 
 import java.util.HashMap;
 
@@ -56,4 +55,7 @@ public final class BlockRegistry {
         TagInjector.inject(Registries.BLOCK, miningLevelTag, block);
     }
 
+    private static WaystoneStyle style(Block top, Block bottom) {
+        return WaystoneStyle.simple((ButtonBlock) top, (WallBlock) bottom);
+    }
 }
