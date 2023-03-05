@@ -1,3 +1,3 @@
 [submodule "pinlib"]
 	path = pinlib
-	url = git@github.com:rokoblox/pinlib.git
+	url = https://github.com/rokoblox/pinlib.git
