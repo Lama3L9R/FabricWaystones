@@ -3,6 +3,7 @@ package wraith.fwaystones.access;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import wraith.fwaystones.block.WaystoneBlockEntity;
+import wraith.fwaystones.util.SearchType;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -55,4 +56,8 @@ public interface PlayerEntityMixinAccess extends PlayerAccess {
     void setTeleportCooldown(int cooldown);
 
     void forgetAllWaystones();
+    boolean autofocusWaystoneFields();
+    void toggleAutofocusWaystoneFields();
+    SearchType getSearchType();
+    void setSearchType(SearchType searchType);
 }
