@@ -17,6 +17,7 @@ repositories {
 	maven { url = "https://maven.nucleoid.xyz" }
 	maven { url = "https://oss.sonatype.org/content/repositories/snapshots" }
     maven { url = "https://www.cursemaven.com" }
+    maven { url = "https://repo.lama.icu:233/artifactory/gradle-release" }
     maven {
         name = "JourneyMap (Public)"
         url = "https://jm.gserv.me/repository/maven-public/"
