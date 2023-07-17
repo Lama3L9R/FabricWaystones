@@ -6,6 +6,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
+import net.minecraft.registry.tag.DamageTypeTags;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -14,6 +15,7 @@ import wraith.fwaystones.FabricWaystones;
 import wraith.fwaystones.access.PlayerEntityMixinAccess;
 import wraith.fwaystones.block.WaystoneBlockEntity;
 import wraith.fwaystones.integration.event.WaystoneEvents;
+import wraith.fwaystones.util.SearchType;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -27,6 +29,8 @@ public class PlayerEntityMixin implements PlayerEntityMixinAccess {
     private final Set<String> discoveredWaystones = ConcurrentHashMap.newKeySet();
     private boolean viewDiscoveredWaystones = true;
     private boolean viewGlobalWaystones = true;
+    private boolean autofocusWaystoneFields = true;
+    private SearchType waystoneSearchType = SearchType.CONTAINS;
     private int teleportCooldown = 0;
 
     private PlayerEntity _this() {
@@ -43,7 +47,7 @@ public class PlayerEntityMixin implements PlayerEntityMixinAccess {
 
     @Inject(method = "applyDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;applyArmorToDamage(Lnet/minecraft/entity/damage/DamageSource;F)F"))
     public void applyDamage(DamageSource source, float amount, CallbackInfo ci) {
-        if (source == DamageSource.OUT_OF_WORLD) {
+        if (source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             return;
         }
         setTeleportCooldown(FabricWaystones.CONFIG.teleportation_cooldown.cooldown_ticks_when_hurt());
@@ -183,6 +187,8 @@ public class PlayerEntityMixin implements PlayerEntityMixinAccess {
         customTag.put("discovered_waystones", waystones);
         customTag.putBoolean("view_discovered_waystones", this.viewDiscoveredWaystones);
         customTag.putBoolean("view_global_waystones", this.viewGlobalWaystones);
+        customTag.putBoolean("autofocus_waystone_fields", this.autofocusWaystoneFields);
+        customTag.putString("waystone_search_type", this.waystoneSearchType.name());
 
         tag.put(FabricWaystones.MOD_ID, customTag);
         return tag;
@@ -229,6 +235,16 @@ public class PlayerEntityMixin implements PlayerEntityMixinAccess {
         }
         if (tag.contains("view_discovered_waystones")) {
             this.viewDiscoveredWaystones = tag.getBoolean("view_discovered_waystones");
+        }
+        if (tag.contains("autofocus_waystone_fields")) {
+            this.autofocusWaystoneFields = tag.getBoolean("autofocus_waystone_fields");
+        }
+        if (tag.contains("waystone_search_type")) {
+            try {
+                this.waystoneSearchType = SearchType.valueOf(tag.getString("waystone_search_type"));
+            } catch (IllegalArgumentException e) {
+                FabricWaystones.LOGGER.warn("Received invalid waystone search type: " + tag.getString("waystone_search_type"));
+            }
         }
     }
 
@@ -280,6 +296,26 @@ public class PlayerEntityMixin implements PlayerEntityMixinAccess {
         WaystoneEvents.FORGET_ALL_WAYSTONES_EVENT.invoker().onForgetAll(_this());
         //discoveredWaystones.forEach(hash -> forgetWaystone(hash, false));
         syncData();
+    }
+
+    @Override
+    public boolean autofocusWaystoneFields() {
+        return autofocusWaystoneFields;
+    }
+
+    @Override
+    public void toggleAutofocusWaystoneFields() {
+        autofocusWaystoneFields = !autofocusWaystoneFields;
+    }
+
+    @Override
+    public SearchType getSearchType() {
+        return waystoneSearchType;
+    }
+
+    @Override
+    public void setSearchType(SearchType searchType) {
+        this.waystoneSearchType = searchType;
     }
 
 }

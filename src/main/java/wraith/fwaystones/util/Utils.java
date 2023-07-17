@@ -32,6 +32,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Random;
 
 public final class Utils {
@@ -143,7 +144,7 @@ public final class Utils {
             player.sendMessage(Text.translatable("fwaystones.no_teleport.invalid_waystone"), true);
             return false;
         }
-        var sourceDim = getDimensionName(player.world);
+        var sourceDim = getDimensionName(player.getWorld());
         var destDim = waystone.getWorldName();
         if (!FabricWaystones.CONFIG.ignore_dimension_blacklists_if_same_dimension() || !sourceDim.equals(destDim)) {
             if (FabricWaystones.CONFIG.disable_teleportation_from_dimensions().contains(sourceDim)) {
@@ -166,7 +167,7 @@ public final class Utils {
                     return false;
                 }
                 if (takeCost) {
-                    player.damage(DamageSource.MAGIC, amount);
+                    player.damage(player.getWorld().getDamageSources().magic(), amount);
                 }
                 return true;
             }
@@ -213,7 +214,7 @@ public final class Utils {
                 if (takeCost) {
                     removeItem(player.getInventory(), item, amount);
 
-                    if (player.world.isClient || FabricWaystones.WAYSTONE_STORAGE == null) {
+                    if (player.getWorld().isClient || FabricWaystones.WAYSTONE_STORAGE == null) {
                         return true;
                     }
                     var waystoneBE = waystone.getEntity();
@@ -346,4 +347,13 @@ public final class Utils {
         return (item.length == 2) ? new Identifier(item[0], item[1]) : new Identifier(item[0]);
     }
 
+    public static boolean isSubSequence(String mainString, String searchString) {
+        int j = 0;
+        for (int i = 0; i < mainString.length() && j < searchString.length(); ++i) {
+            if (mainString.charAt(i) == searchString.charAt(j))
+                ++j;
+            if (j == searchString.length()) return true;
+        }
+        return false;
+    }
 }
